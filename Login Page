@@ -31,6 +31,7 @@ class _MyFormPageState extends State<MyFormPage> {
   final _passwordController = TextEditingController();
   String? _emailErrorText;
   String? _passwordErrorText;
+  bool _rememberMe = false;
 
   @override
   Widget build(BuildContext context) {
@@ -51,36 +52,28 @@ class _MyFormPageState extends State<MyFormPage> {
             child: Form(
               key: _formKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     'Welcome',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold,
                       color: Colors.black,
-                      fontSize: 40,
                     ),
                   ),
                   SizedBox(height: 20),
                   TextFormField(
                     controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
                       labelText: 'Email',
-                      labelStyle: TextStyle(
-                        color: Colors.black,
-                      ),
                       errorText: _emailErrorText,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
                       ),
                     ),
                     validator: (value) {
@@ -98,22 +91,12 @@ class _MyFormPageState extends State<MyFormPage> {
                     controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
                       labelText: 'Password',
-                      labelStyle: TextStyle(
-                        color: Colors.black,
-                      ),
                       errorText: _passwordErrorText,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
                       ),
                     ),
                     validator: (value) {
@@ -127,27 +110,55 @@ class _MyFormPageState extends State<MyFormPage> {
                     },
                   ),
                   SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _rememberMe,
+                        onChanged: (value) {
+                          setState(() {
+                            _rememberMe = value!;
+                          });
+                        },
+                      ),
+                      Text(
+                        'Remember me',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      setState(() {
-                        _emailErrorText = null;
-                        _passwordErrorText = null;
-                      });
                       if (_formKey.currentState!.validate()) {
-                        print('Email: ${_emailController.text}');
-                        print('Password: ${_passwordController.text}');
+                        setState(() {
+                          _emailErrorText = null;
+                          _passwordErrorText = null;
+                        });
+                        // TODO: Authenticate the user
+                        _emailController.clear();
+                        _passwordController.clear();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Logged in successfully')),
+                        );
                       } else {
                         setState(() {
-                          if (_emailController.text.isEmpty) {
-                            _emailErrorText = 'Please enter your email';
-                          }
-                          if (_passwordController.text.isEmpty) {
-                            _passwordErrorText = 'Please enter your password';
-                          }
+                          _emailErrorText =
+                              _emailController.text.isEmpty ? 'Please enter your email' : null;
+                          _passwordErrorText = _passwordController.text.isEmpty
+                              ? 'Please enter your password'
+                              : 'Password must be at least 6 characters long';
                         });
                       }
                     },
-                    child: Text('Sign In'),
+                    child: Text('Log In'),
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
                   ),
                 ],
               ),
