@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'RegisterPage.dart';
-
+import 'HomePage.dart';
 
 void main() {
   runApp(MyApp());
 }
-
-
-
 
 class MyApp extends StatelessWidget {
   @override
@@ -83,10 +79,7 @@ class _MyFormPageState extends State<MyFormPage> {
                       prefixIcon: Icon(Icons.email),
                     ),
                     validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      if (!value.contains('@')) {
+                      if (value!.isEmpty || value != 'johndarrelcmdi@lacap') {
                         return 'Please enter a valid email';
                       }
                       return null;
@@ -107,8 +100,8 @@ class _MyFormPageState extends State<MyFormPage> {
                       prefixIcon: Icon(Icons.lock),
                     ),
                     validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your password';
+                      if (value!.isEmpty || value != 'intern@batch04') {
+                        return 'Please enter a valid password';
                       }
                       if (value.length < 6) {
                         return 'Password must be at least 6 characters long';
@@ -163,13 +156,19 @@ class _MyFormPageState extends State<MyFormPage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Logged in successfully')),
                         );
-
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => HomePage()),
+                        );
                       } else {
                         setState(() {
                           _emailErrorText =
-                          _emailController.text.isEmpty ? 'Please enter your email' : null;
-                          _passwordErrorText = _passwordController.text.isEmpty
-                              ? 'Please enter your password'
+                          _emailController.text.isEmpty || _emailController.text != 'johndarrelcmdi@lacap'
+                              ? 'Please enter a valid email'
+                              : null;
+                          _passwordErrorText =
+                          _passwordController.text.isEmpty || _passwordController.text != 'intern@batch04'
+                              ? 'Please enter a valid password'
                               : 'Password must be at least 6 characters long';
                         });
                       }
@@ -196,7 +195,7 @@ class _MyFormPageState extends State<MyFormPage> {
                       SizedBox(width: 5),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => RegisterPage()));
+                          // TODO: Navigate to the register page
                         },
                         child: Text(
                           'Register',
@@ -207,16 +206,10 @@ class _MyFormPageState extends State<MyFormPage> {
                           ),
                         ),
                       ),
-
-
-
                     ],
                   ),
-
                 ],
               ),
-
-
             ),
           ),
         ],
